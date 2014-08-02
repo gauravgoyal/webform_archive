@@ -10,7 +10,6 @@
  *
  * @param object $node
  *   Loaded webform node object.
- *
  * @param array $options
  *   Options for report generation, array('start_time', 'end_time').
  */
@@ -78,14 +77,14 @@ function webform_archive_get_report_file_path($options, $nid) {
   $year = date('Y', $start_time);
   $month = date('M', $start_time);
 
-  /**
-   * File name is created in a manner.
-   * Format = webform-archive- [nid] -[frequency] - [Year] - [Start Month].csv
-   */
 
-  $file_name = 'webform-archive-' . $nid . '-' . $frequency . '-' .$year;
+  // File name is created in a manner.
+  // Format = webform-archive- [nid] -[frequency] - [Year] - [Start Month].csv.
+  //
+
+  $file_name = 'webform-archive-' . $nid . '-' . $frequency . '-' . $year;
   if ($frequency != 'yearly') {
-   $file_name .= '-' . $month;
+    $file_name .= '-' . $month;
   }
   $file_name .= '.csv';
   $file_path = WEBFORM_ARCHIVE_DIRECTORY . '/' . $file_name;
