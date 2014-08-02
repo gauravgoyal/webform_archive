@@ -17,7 +17,7 @@ function webform_archive_batch_process_start($webforms, $archive_date_timestamp,
     $context['sandbox']['max'] = ($count != 0) ? $count : 1;
   }
   // 10 submissions at a time without a timeout.
-  $limit = variable_get('webform_archvive_batch_limit', WEBFORM_ARCHIVE_BATCH_LIMIT);
+  $limit = variable_get('webform_archive_batch_limit', WEBFORM_ARCHIVE_BATCH_LIMIT);
   // With each pass through the callback, retrieve the next group of results.
   $submissions = webform_archive_get_submissions($webforms, $archive_date_timestamp, $context['sandbox']['current_submission'], $limit);
   if (!empty($submissions)) {
@@ -197,7 +197,7 @@ function webform_archive_download_report_start($node, $options, &$context) {
   }
   $header = $options['components'];
   // 10 submissions at a time without a timeout.
-  $limit = variable_get('webform_archvive_batch_limit', WEBFORM_ARCHIVE_BATCH_LIMIT);
+  $limit = variable_get('webform_archive_batch_limit', WEBFORM_ARCHIVE_BATCH_LIMIT);
   // With each pass through the callback, retrieve the next group of results.
   $submissions = webform_archive_get_archive_submissions(array($node->nid), $options, $context['sandbox']['current_submission'], $limit);
   if (!empty($submissions)) {

@@ -1,7 +1,6 @@
 <?php
-
 /**
- * @file.
+ * @file
  *
  * Provides the webform archive interface for admins for archiving webforms.
  */
@@ -85,12 +84,12 @@ function webform_archive_form_validate($form, $form_state) {
 }
 
 /**
- * Submit callback for archive form
+ * Submit callback for archive form.
  */
 function webform_archive_form_submit($form, $form_state) {
   $archive_date_timestamp = 0;
   if ($form_state['values']['webforms_archive_all'] == 1) {
-      $webforms = $form_state['storage']['webforms'];
+    $webforms = $form_state['storage']['webforms'];
   }
   else {
     $webforms = $form_state['values']['weform_archive_nid'];
@@ -102,7 +101,8 @@ function webform_archive_form_submit($form, $form_state) {
   // Extracting the nid(s) of the webforms.
   $webforms_nid = array_keys($webforms);
   $operations = array(
-    array('webform_archive_batch_process_start', array($webforms_nid, $archive_date_timestamp)),
+    array('webform_archive_batch_process_start',
+      array($webforms_nid, $archive_date_timestamp)),
   );
   $batch = array(
     'title' => t('Archive Webform Submissions'),
@@ -122,7 +122,7 @@ function webform_archive_form_submit($form, $form_state) {
  * @param int $status
  *   Status of webform, 0 = closed, 1 = Active.
  *
- * @return
+ * @return array
  *   All webforms.
  */
 function webform_archive_get_all_webforms($status = 1) {
@@ -141,11 +141,11 @@ function webform_archive_get_all_webforms($status = 1) {
 
 function webform_archive_admin_settings() {
   $form = array();
-  $form['webform_archvive_batch_limit'] = array(
+  $form['webform_archive_batch_limit'] = array(
     '#type' => 'textfield',
     '#title' => t('Batch Limit'),
     '#description' => t('No. of webform submissions for every batch process. The default of 10 is kept low keeping in mind that PHP should not time out. If you have more memory and CPU, you could choose a larger number to save some time while archiving all the data.'),
-    '#default_value' => variable_get('webform_archvive_batch_limit', WEBFORM_ARCHIVE_BATCH_LIMIT),
+    '#default_value' => variable_get('webform_archive_batch_limit', WEBFORM_ARCHIVE_BATCH_LIMIT),
     '#element_validate' => array('element_validate_integer_positive'),
     '#required' => TRUE,
   );

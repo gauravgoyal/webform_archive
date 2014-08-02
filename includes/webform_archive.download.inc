@@ -1,7 +1,6 @@
 <?php
-
 /**
- * @file.
+ * @file
  * Archive Report Download.
  */
 
@@ -29,7 +28,7 @@ function webform_archive_download_reports($webform_node) {
  * @param int $nid
  *   Webfrom nid.
  *
- * @return boolean
+ * @return bool
  *   Returns True if webform is archived else false.
  */
 function webform_archive_is_webform_archived($nid) {
@@ -63,7 +62,8 @@ function webform_archive_download_reports_form($form, &$form_state, $webform_nod
   $year_range = $start_range . ':' . $end_range;
 
   // Various Report download options.
-  $options = array('yearly' => t('Yearly'), 'monthly' => t('Monthly'), 'half-yearly' => t('Half Yearly'), 'quarterly' => t('Quarterly'));
+  $options = array('yearly' => t('Yearly'), 'monthly' => t('Monthly'),
+    'half-yearly' => t('Half Yearly'), 'quarterly' => t('Quarterly'));
 
   $form_state['storage']['webform_node'] = $webform_node;
 
@@ -99,13 +99,13 @@ function webform_archive_download_reports_form($form, &$form_state, $webform_nod
   if (isset($form_state['values']['webform_archive_report_options'])) {
     $option = $form_state['values']['webform_archive_report_options'];
     switch ($option) {
-      case 'monthly' :
-      case 'half-yearly' :
-      case 'quarterly' :
+      case 'monthly':
+      case 'half-yearly':
+      case 'quarterly':
         $form['webform_archive_container']['webform_archive_report_start_time']['#date_format'] = 'Y-m';
         break;
 
-      default :
+      default:
         break;
     }
   }
@@ -163,8 +163,7 @@ function webform_archive_get_last_submission_timestamp($nid) {
 }
 
 /**
- * Validation Callback for download form. Validate the time diff b/w start time
- * and time for Quarter and halfyearly reports.
+ * Validation Callback for download form.
  */
 function webform_archive_download_reports_form_validate($form, &$form_state) {
   if (isset($form_state['clicked_button']['#name']) && $form_state['clicked_button']['#name'] == 'report_download_submit') {
@@ -180,7 +179,7 @@ function webform_archive_download_reports_form_validate($form, &$form_state) {
 }
 
 /**
- * Submit Callback for download form, Initiates a batch process to save a report.
+ * Submit Callback for download form, Initiates batch process to save a report.
  */
 function webform_archive_download_reports_form_submit($form, &$form_state) {
   $options = array();
@@ -190,7 +189,7 @@ function webform_archive_download_reports_form_submit($form, &$form_state) {
   $webform_node = $form_state['storage']['webform_node'];
   $start_time = $form_state['values']['webform_archive_report_start_time'];
   $frequency = $form_state['values']['webform_archive_report_options'];
-  switch ($frequency){
+  switch ($frequency) {
     case 'yearly':
       $end_time = strtotime('+1 year', $start_time);
       break;
