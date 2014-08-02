@@ -1,7 +1,6 @@
 <?php
-
 /**
- * @file.
+ * @file
  * Archive Webforms Reports.
  */
 
@@ -24,11 +23,11 @@ function webform_archive_get_reports() {
   $header = array(
     array(
       'data' => t('NID'),
-      'field' => 'w.nid'
+      'field' => 'w.nid',
     ),
     array(
       'data' => t('Title'),
-      'field' => 'w.title'
+      'field' => 'w.title',
     ),
     array(
       'data' => t('Status'),
@@ -85,11 +84,11 @@ function webform_archive_get_reports() {
  */
 function webform_archive_report_table($header) {
   $query = db_select('archive_webform', 'w')
-  ->extend('PagerDefault')
-  ->extend('TableSort')
-  ->fields('w')
-  ->limit(30)
-  ->orderByHeader($header);
+    ->extend('PagerDefault')
+    ->extend('TableSort')
+    ->fields('w')
+    ->limit(30)
+    ->orderByHeader($header);
   $result = $query->execute();
 
   return $result;
