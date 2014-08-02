@@ -1,6 +1,6 @@
 <?php
 /**
- * @file.
+ * @file
  * Contains batch processes for webform_archive module.
  */
 
@@ -52,7 +52,7 @@ function webform_archive_batch_process_start($webforms, $archive_date_timestamp,
 }
 
 /**
- * Batch 'finished' callback
+ * Batch 'finished' callback.
  */
 function webform_archive_batch_finished($success, $results, $operations) {
   if ($success) {
@@ -80,7 +80,9 @@ function webform_archive_batch_finished($success, $results, $operations) {
     // An error occurred.
     // $operations contains the operations that remained unprocessed.
     $error_operation = reset($operations);
-    $message = t('An error occurred while processing %error_operation with arguments: @arguments', array('%error_operation' => $error_operation[0], '@arguments' => print_r($error_operation[1], TRUE)));
+    $message = t('An error occurred while processing %error_operation with
+      arguments: @arguments', array('%error_operation' => $error_operation[0],
+        '@arguments' => print_r($error_operation[1], TRUE)));
     if (module_exists('dblog')) {
       watchdog('webform_archive', $message, array(), WATCHDOG_CRITICAL);
       drupal_set_message(t('Some error occured while archiving webforms'), 'error');
@@ -96,13 +98,10 @@ function webform_archive_batch_finished($success, $results, $operations) {
  *
  * @param array $webforms
  *   Webforms whose submissions are to arhcived.
- *
  * @param int $archive_date_timestamp
  *   Unix timestamp for the date.
- *
  * @param int $current_submission_sid
  *   SID, all submissions whoses sid is greater then this current submission.
- *
  * @param int $limit
  *   No. of submissions to return.
  *
@@ -124,7 +123,7 @@ function webform_archive_get_submissions($webforms, $archive_date_timestamp, $cu
   if (isset($result) && !empty($result)) {
     while ($submission = $result->fetchAssoc()) {
       $sid = $submission['sid'];
-      $nid =  $submission['nid'];
+      $nid = $submission['nid'];
       $submission_data = webform_get_submissions(array('nid' => $nid, 'sid' => $sid));
       $submissions[$submission['sid']] = isset($submission_data[$sid]) ? $submission_data[$sid] : NULL;
     }
@@ -136,8 +135,7 @@ function webform_archive_get_submissions($webforms, $archive_date_timestamp, $cu
  * Returns the total count of webform submissions.
  *
  * @param array $webforms
- *   array of webform nid(s).
- *
+ *   Array of webform nid(s).
  * @param int $archive_date_timestamp
  *   Unix timestamp for archiving submissions.
  *
@@ -160,7 +158,7 @@ function webform_archive_submissions_count($webforms, $archive_date_timestamp) {
  * Archive the webform submitted data.
  *
  * @param array $data
- *  Webfrom submitted data
+ *   Webfrom submitted data.
  */
 function webform_archive_archive_submitted_data($data, $nid, $sid) {
   foreach ($data as $cid => $values) {
@@ -243,7 +241,9 @@ function webform_archive_download_batch_finished($success, $results, $operations
     // An error occurred.
     // $operations contains the operations that remained unprocessed.
     $error_operation = reset($operations);
-    $message = t('An error occurred while processing %error_operation with arguments: @arguments', array('%error_operation' => $error_operation[0], '@arguments' => print_r($error_operation[1], TRUE)));
+    $message = t('An error occurred while processing %error_operation with
+      arguments: @arguments', array('%error_operation' => $error_operation[0],
+      '@arguments' => print_r($error_operation[1], TRUE)));
     if (module_exists('dblog')) {
       watchdog('webform_archive', $message, array(), WATCHDOG_CRITICAL);
       drupal_set_message(t('Some error occured while archiving webforms'), 'error');
@@ -257,16 +257,13 @@ function webform_archive_download_batch_finished($success, $results, $operations
 /**
  * Get webform submission from the archive table.
  *
- * @param integer $nid
+ * @param int $nid
  *   Webform nid.
- *
  * @param array $options
  *   Submission filter options. arry('start_time', 'end_time').
- *
- * @param integer $current_submission
+ * @param int $current_submission
  *   SID, greater then this sid will be fetched.
- *
- * @param integer $limit
+ * @param int $limit
  *   Limit, no. of submissions to be fetched.
  *
  * @return array
@@ -303,16 +300,14 @@ function webform_archive_get_archive_submissions($nid, $options, $current_submis
 /**
  * Get Count of webform submission.
  *
- * @param integer $nid
+ * @param int $nid
  *   Webform NID.
- *
- * @param integer $start_time
+ * @param int $start_time
  *   Submission start time for webform.
- *
- * @param integer $end_time
+ * @param int $end_time
  *   Submission end time for webform.
  *
- * @return integer
+ * @return int
  *   Submission count.
  */
 function webform_archive_archive_submissions_count($nid, $start_time, $end_time = NULL) {
@@ -345,8 +340,8 @@ function webform_archive_insert_archive_webform_data($nid, $archived) {
     ->execute();
   }
   else {
-  db_insert('archive_webform')
-  ->fields(array('nid' => $nid, 'archived' => $archived))
-  ->execute();
+    db_insert('archive_webform')
+      ->fields(array('nid' => $nid, 'archived' => $archived))
+      ->execute();
   }
 }
