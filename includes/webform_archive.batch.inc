@@ -81,8 +81,10 @@ function webform_archive_batch_finished($success, $results, $operations) {
     // $operations contains the operations that remained unprocessed.
     $error_operation = reset($operations);
     $message = t('An error occurred while processing %error_operation with
-      arguments: @arguments', array('%error_operation' => $error_operation[0],
-        '@arguments' => print_r($error_operation[1], TRUE)));
+      arguments: @arguments', array(
+        '%error_operation' => $error_operation[0],
+        '@arguments' => print_r($error_operation[1], TRUE))
+      );
     if (module_exists('dblog')) {
       watchdog('webform_archive', $message, array(), WATCHDOG_CRITICAL);
       drupal_set_message(t('Some error occured while archiving webforms'), 'error');
@@ -327,7 +329,7 @@ function webform_archive_archive_submissions_count($nid, $start_time, $end_time 
  * Updates the webform archived time.
  *
  * @param int $nid
- *   webform nid.
+ *   Webform nid.
  * @param int $archived
  *   Time for archive.
  */
