@@ -1,4 +1,13 @@
 <?php
+/**
+ * @file
+ * Schema for the webform_archive module.
+ *
+ * Defines three tables :
+ *  1. archive_webforms.
+ *  2. archive_webform_submissions (Clone of webform_submission table).
+ *  3. archive_webform_submitted_data (Clone of webform_submitted_data table).
+ */
 
 /**
  * Implements hook_schema().
@@ -7,7 +16,7 @@ function webform_archive_schema() {
   // Create a directory for archived reports.
   $path = 'public://webform_archive_reports';
   if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
-    drupal_set_message(t('Unable to create webform archive directory, %path. Check the permissions on your files directory.', array('%path' => file_uri_target($path))), 'error');
+    drupal_set_message('Unable to create webform archive directory', 'error');
   }
 
   $schema = array();

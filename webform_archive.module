@@ -1,23 +1,23 @@
 <?php
-
 /**
- * @file.
+ * @file
  * Contains hooks and functions.
  */
 
 define('WEBFORM_ARCHIVE_DIRECTORY', 'webform_archive_reports');
 define('WEBFORM_ARCHIVE_BATCH_LIMIT', 10);
+
 /**
  * Implements hook_permission().
  */
 function webform_archive_permission() {
   return array(
-    'administer webform archive' =>  array(
+    'administer webform archive' => array(
       'title' => t('Administer Webfrom Archive'),
       'description' => t('Access Webfrom Archive administration pages.'),
       'restrict access' => TRUE,
     ),
-    'download webform archive reports' =>  array(
+    'download webform archive reports' => array(
       'title' => t('Download Webfrom Archive Reports'),
       'description' => t('Download Webfrom Archive Reports.'),
     ),
@@ -67,7 +67,7 @@ function webform_archive_menu() {
     'file' => 'includes/webform_archive.admin.inc',
   );
 
-  // Download report link for the webforms
+  // Download report link for the webforms.
   $items['node/%webform_menu/webform-results/download-reports'] = array(
     'title' => 'Archive Download',
     'page callback' => 'webform_archive_download_reports',
