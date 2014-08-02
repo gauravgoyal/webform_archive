@@ -1,0 +1,6 @@
+name = Webform Archive
+description = Creates the functionality to archive webform submissions.
+core = 7.x
+package = Webform
+config = admin/config/content/webform/archive
+dependencies[] = webform
