@@ -74,17 +74,13 @@ function webform_archive_export_download($node, $options = NULL) {
 function webform_archive_get_report_file_path($options, $nid) {
   $start_time = $options['start_time'];
   $frequency = $options['frequency'];
-  $year = date('Y', $start_time);
-  $month = date('M', $start_time);
+  $time = date('Y-M', $start_time);
 
   // File name is created in a manner.
 
   // Format = webform-archive- [nid] -[frequency] - [Year] - [Start Month].csv.
 
-  $file_name = 'webform-archive-' . $nid . '-' . $frequency . '-' . $year;
-  if ($frequency != 'yearly') {
-    $file_name .= '-' . $month;
-  }
+  $file_name = 'webform-archive-' . $nid . '-' . $frequency . '-' . $time;
   $file_name .= '.csv';
   $file_path = WEBFORM_ARCHIVE_DIRECTORY . '/' . $file_name;
   $file_path = file_build_uri($file_path);

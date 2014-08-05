@@ -73,42 +73,21 @@ function webform_archive_download_reports_form($form, &$form_state, $webform_nod
     '#title' => t('Frequency'),
     '#default_value' => 'yearly',
     '#required' => TRUE,
-    '#ajax' => array(
-      'callback' => 'webform_archive_report_options_ajax_callback',
-      'method' => 'replace',
-      'wrapper' => 'report-time',
-    ),
   );
 
-  $form['webform_archive_container'] = array(
-    '#prefix' => '<div id="report-time">',
-    '#suffix' => '</div>',
-  );
-
-  $form['webform_archive_container']['webform_archive_report_start_time'] = array(
+  $form['webform_archive_report_start_time'] = array(
     '#type' => module_exists('date') ? 'date_select' : 'date',
-    '#date_format' => 'Y',
+    '#date_format' => 'Y-m',
     '#required' => TRUE,
     '#title' => t('Select Duration'),
     '#date_year_range' => $year_range,
     '#date_label_position' => 'within',
   );
 
-  // Build form element according to download options.
-  // Create a form element if option is quarter or half year.
-  if (isset($form_state['values']['webform_archive_report_options'])) {
-    $option = $form_state['values']['webform_archive_report_options'];
-    switch ($option) {
-      case 'monthly':
-      case 'half-yearly':
-      case 'quarterly':
-        $form['webform_archive_container']['webform_archive_report_start_time']['#date_format'] = 'Y-m';
-        break;
-
-      default:
-        break;
-    }
-  }
+  $form['webform_archive_show_count'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show submission count only'),
+  );
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -117,13 +96,6 @@ function webform_archive_download_reports_form($form, &$form_state, $webform_nod
   );
 
   return $form;
-}
-
-/**
- * Ajax Callback for download options.
- */
-function webform_archive_report_options_ajax_callback($form, &$form_state) {
-  return $form['webform_archive_container'];
 }
 
 /**
@@ -163,22 +135,6 @@ function webform_archive_get_last_submission_timestamp($nid) {
 }
 
 /**
- * Validation Callback for download form.
- */
-function webform_archive_download_reports_form_validate($form, &$form_state) {
-  if (isset($form_state['clicked_button']['#name']) && $form_state['clicked_button']['#name'] == 'report_download_submit') {
-    $option = $form_state['values']['webform_archive_report_options'];
-    $start_time = $form_state['values']['webform_archive_report_start_time'];
-    switch ($option) {
-      case 'yearly':
-        $start_time = $start_time . '-01';
-        break;
-    }
-    $form_state['values']['webform_archive_report_start_time'] = strtotime($start_time);
-  }
-}
-
-/**
  * Submit Callback for download form, Initiates batch process to save a report.
  */
 function webform_archive_download_reports_form_submit($form, &$form_state) {
@@ -187,7 +143,9 @@ function webform_archive_download_reports_form_submit($form, &$form_state) {
   // the batch process.
   module_load_include('inc', 'webform_archive', 'includes/webform_archive.export');
   $webform_node = $form_state['storage']['webform_node'];
+  $show_count = $form_state['values']['webform_archive_show_count'];
   $start_time = $form_state['values']['webform_archive_report_start_time'];
+  $start_time = strtotime($start_time);
   $frequency = $form_state['values']['webform_archive_report_options'];
   switch ($frequency) {
     case 'yearly':
@@ -212,8 +170,15 @@ function webform_archive_download_reports_form_submit($form, &$form_state) {
   $options['start_time'] = $start_time;
   $options['end_time'] = $end_time;
   $options['frequency'] = $frequency;
-  // Calls the batch process.
-  webform_archive_export_download($webform_node, $options);
+  if ($show_count == 1) {
+    module_load_include('inc', 'webform_archive', 'includes/webform_archive.batch');
+    $count = webform_archive_archive_submissions_count($webform_node->nid, $start_time, $end_time);
+    drupal_set_message('Total Download Count : ' . $count);
+  }
+  else {
+    // Calls the batch process.
+    webform_archive_export_download($webform_node, $options);
+  }
 }
 
 /**
