@@ -73,9 +73,29 @@ function webform_archive_drush_command() {
 }
 
 /**
- * @TODO Function which will list out all the archived webforms.
+ * List out all the archived webforms.
  */
 function webform_archive_archived_webform_details() {
+  $archived_webforms = webform_archive_get_archived_webforms();
+  if (!empty($archived_webforms)) {
+     // Set the table headers.
+    $header = array(
+      dt('NID'),
+      dt('Archived till'),
+    );
+    $rows = array();
+    foreach ($archived_webforms as $archived_webform) {
+      $row = array();
+      $row[] = $archived_webform->nid;
+      $row[] = date('d-M-Y', $archived_webform->archived);
+      $rows[] = $row;
+    }
+    array_unshift($rows, $header);
+    drush_print_table($rows, TRUE);
+  }
+  else {
+    drush_print('No Webforms Submissions are Archived.');
+  }
 }
 
 /**

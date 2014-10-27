@@ -79,3 +79,11 @@ function webform_archive_menu() {
   );
   return $items;
 }
+
+function webform_archive_get_archived_webforms() {
+  $archived_webforms = db_select('archive_webform', 'aw' )
+    ->fields('aw')
+    ->execute()
+    ->fetchAll();
+  return $archived_webforms;
+}
