@@ -80,8 +80,14 @@ function webform_archive_menu() {
   return $items;
 }
 
+/**
+ * Gives Archive webform details.
+ *
+ * @return array
+ *   Array containing webform archive details.
+ */
 function webform_archive_get_archived_webforms() {
-  $archived_webforms = db_select('archive_webform', 'aw' )
+  $archived_webforms = db_select('archive_webform', 'aw')
     ->fields('aw')
     ->execute()
     ->fetchAll();
