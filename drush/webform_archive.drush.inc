@@ -8,7 +8,7 @@
  */
 
 /**
- * Implement hook_drush_help().
+ * Implements hook_drush_help().
  */
 function webform_archive_drush_help($section) {
   switch ($section) {
