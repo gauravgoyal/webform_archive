@@ -241,14 +241,16 @@ function webform_archive_download_batch_finished($success, $results, $operations
     $file_path = $results['file_path'];
     $file_path = file_create_url($file_path);
     $file_download_link = l(t('Click here'), $file_path);
-    drupal_set_message(t('To download the Report !link', array('!link' => $file_download_link)));
+    $message = t('To download the Report !link', array('!link' => $file_download_link));
+    $message = filter_xss($message);
+    drupal_set_message($message);
   }
   else {
     // An error occurred.
     // $operations contains the operations that remained unprocessed.
     $error_operation = reset($operations);
-    $message = t('An error occurred while processing %error_operation with
-      arguments: @arguments', array('%error_operation' => $error_operation[0],
+    $message = t('An error occurred while processing %error_operation with arguments: @arguments', array(
+      '%error_operation' => $error_operation[0],
       '@arguments' => print_r($error_operation[1], TRUE)));
     if (module_exists('dblog')) {
       watchdog('webform_archive', $message, array(), WATCHDOG_CRITICAL);
@@ -275,7 +277,7 @@ function webform_archive_download_batch_finished($success, $results, $operations
  * @return array
  *   Webform submission details.
  */
-function webform_archive_get_archive_submissions($nid, $options, $current_submission = 0, $limit) {
+function webform_archive_get_archive_submissions($nid, $options, $current_submission = 0, $limit = 10) {
   $archive_submission = array();
   $submissions = db_select('archive_webform_submissions', 'aws')
   ->fields('aws', array('nid', 'sid', 'submitted', 'remote_addr'))
