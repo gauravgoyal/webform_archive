@@ -33,4 +33,9 @@ Functionality
 1. Archive webform submissions based on time (for one or more webforms)
 2. Generate reports for those archives
 
+Drush Support
+-------------
 
+1. drush ard-webforms-details : Get the list of archived webforms
+2. drush ar-active-webform : Archive active webforms submissions
+3. drush ar-closed-webform : Archive closed webforms submissions
