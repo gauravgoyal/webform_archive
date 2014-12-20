@@ -1,7 +1,6 @@
 <?php
 /**
  * @file
- *
  * Provides the webform archive interface for admins for archiving webforms.
  */
 
@@ -142,6 +141,12 @@ function webform_archive_get_all_webforms($status = 1) {
   return $webforms;
 }
 
+/**
+ * Settings for the batch process, define the number of submissions for batch.
+ *
+ * @return array
+ *   $form.
+ */
 function webform_archive_admin_settings() {
   $form = array();
   $form['webform_archive_batch_limit'] = array(
