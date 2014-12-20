@@ -16,7 +16,7 @@ function webform_archive_schema() {
   // Create a directory for archived reports.
   $path = 'public://webform_archive_reports';
   if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
-    $message = t('Unable to create webform archive directory, %path.Check the
+    $message = st('Unable to create webform archive directory, %path.Check the
       permissions on your files directory.', array('%path' => file_uri_target($path)));
     drupal_set_message($message, 'error');
   }
@@ -46,8 +46,7 @@ function webform_archive_schema() {
 
   // Archive webform submissions table. [Clone of webform_submission table]
   $schema['archive_webform_submissions'] = array(
-    'description' => 'Holds general information about archive submissions
-     outside of field values.',
+    'description' => 'Holds general information about archive submissions outside of field values.',
     'fields' => array(
       'sid' => array(
         'description' => 'The unique identifier for this archive submission.',
@@ -98,7 +97,7 @@ function webform_archive_schema() {
     ),
   );
 
-  // Archive webform submitted data table. [Clone of webform_submitted_data table]
+  // Archive webform submitted data. [Clone of webform_submitted_data table].
   $schema['archive_webform_submitted_data'] = array(
     'description' => 'All submitted field data for archive webform submissions.',
     'fields' => array(
