@@ -164,7 +164,11 @@ function webform_archive_submissions_count($webforms, $archive_date_timestamp) {
  */
 function webform_archive_archive_submitted_data($data, $nid, $sid) {
   foreach ($data as $cid => $values) {
-    foreach ($values['value'] as $delta => $value) {
+    // This is done for supporting webform V - 4.x.
+    if (isset($values['values'])) {
+      $values = $values['values'];
+    }
+    foreach ($values as $delta => $value) {
       $data = array(
         'nid' => $nid,
         'sid' => $sid,

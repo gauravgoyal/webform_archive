@@ -96,6 +96,9 @@ function webform_archive_form_submit($form, $form_state) {
   }
   if (isset($form_state['values']['weform_archive_time'])) {
     $archive_date = $form_state['values']['weform_archive_time'];
+    if (!module_exists('date_popup')) {
+      $archive_date = $archive_date['year'] . '-' . $archive_date['month'] . '-' . $archive_date['day'];
+    }
     $archive_date_timestamp = strtotime($archive_date);
   }
   // Extracting the nid(s) of the webforms.
