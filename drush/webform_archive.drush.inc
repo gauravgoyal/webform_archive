@@ -226,7 +226,7 @@ function webform_archive_get_valid_webforms($webform_nids, $status) {
 
   if (!empty($nid_not_exists)) {
     $nid_not_exists = implode(',', $nid_not_exists);
-    drush_print(dt('Webform nid(s): (@nid) does not exists, so these will not be archived', array('@nid' => $nid_not_exists)));
+    drush_print(dt('Webform nid(s): (@nid) either does not exists or are not webforms, so these will not be archived', array('@nid' => $nid_not_exists)));
   }
 
   if (!empty($wrong_webform)) {
