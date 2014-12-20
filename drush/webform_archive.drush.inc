@@ -14,12 +14,15 @@ function webform_archive_drush_help($section) {
   switch ($section) {
     case 'meta:webfrom_archive:title':
       return dt('Webfrom archive commands');
+
     case 'drush:ard-webforms-details':
       return dt('Show the list of archived webforms.');
+
     case 'drush:ar-active-webforms':
       $help = dt('Archive all the active webform submissions till today.');
       $help .= dt('If no webform is spacified all active webforms will be archived till today.');
       return $help;
+
     case 'drush:ar-closed-webforms':
       $help = dt('Archive all the closed webform submissions.');
       $help .= dt('If no webform is spacified all closed webforms will be archived.');
@@ -28,7 +31,7 @@ function webform_archive_drush_help($section) {
 }
 
 /**
- * Implement hook_drush_command().
+ * Implements hook_drush_command().
  */
 function webform_archive_drush_command() {
   $items = array();
@@ -78,7 +81,7 @@ function webform_archive_drush_command() {
 function webform_archive_archived_webform_details() {
   $archived_webforms = webform_archive_get_archived_webforms();
   if (!empty($archived_webforms)) {
-     // Set the table headers.
+    // Set the table headers.
     $header = array(
       dt('NID'),
       dt('Archived till'),
@@ -99,7 +102,7 @@ function webform_archive_archived_webform_details() {
 }
 
 /**
- * @TODO Function which will archive all the active webform submissions.
+ * Archive all the active webform submissions.
  */
 function webform_archive_archive_active_webform() {
   // Get the date argument.
@@ -137,9 +140,17 @@ function webform_archive_archive_active_webform() {
   }
 }
 
+/**
+ * Starts batch process in the background.
+ *
+ * @param array $webform_nids
+ *   Nid(s) of webform to archive.
+ * @param int $archived_date_timepstamp
+ *   Unix timestamp for archiving.
+ */
 function webform_archive_start_archiving($webform_nids, $archived_date_timepstamp) {
   $nid_not_exists = array();
-  foreach($webform_nids as $nid) {
+  foreach ($webform_nids as $nid) {
     if (is_object(node_load($nid))) {
       continue;
     }
@@ -153,7 +164,8 @@ function webform_archive_start_archiving($webform_nids, $archived_date_timepstam
   }
 
   $operations = array(
-    array('webform_archive_batch_process_start', array($webform_nids, $archived_date_timepstamp)),
+    array('webform_archive_batch_process_start',
+      array($webform_nids, $archived_date_timepstamp)),
   );
   $batch = array(
     'title' => t('Archive Webform Submissions'),
@@ -165,7 +177,7 @@ function webform_archive_start_archiving($webform_nids, $archived_date_timepstam
     'error_message' => t('Archive Batch has encountered an error.'),
   );
   batch_set($batch);
-  //Start processing the batch operations.
+  // Start processing the batch operations.
   drush_backend_batch_process();
 }
 
