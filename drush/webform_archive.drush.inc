@@ -213,7 +213,7 @@ function webform_archive_get_valid_webforms($webform_nids, $status) {
   $wrong_webform = array();
   foreach ($webform_nids as $nid) {
     $node = node_load($nid);
-    if (is_object($node)) {
+    if (is_object($node) && $node->type == 'webform') {
       if ($node->webform['status'] != $status) {
         $wrong_webform[] = $nid;
       }
