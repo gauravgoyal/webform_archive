@@ -119,29 +119,6 @@ function webform_archive_form_submit($form, $form_state) {
 }
 
 /**
- * Get All webforms according to their status.
- *
- * @param int $status
- *   Status of webform, 0 = closed, 1 = Active.
- *
- * @return array
- *   All webforms.
- */
-function webform_archive_get_all_webforms($status = 1) {
-  $webforms = array();
-  $webform = db_select('webform', 'w');
-  $webform->join('node', 'n', 'w.nid = n.nid');
-  $webform->fields('n', array('nid', 'title'));
-  $webform->condition('n.type', 'webform');
-  $webform->condition('w.status', $status);
-  $webform = $webform->execute();
-  while ($data = $webform->fetchAssoc()) {
-    $webforms[$data['nid']] = $data['title'];
-  }
-  return $webforms;
-}
-
-/**
  * Settings for the batch process, define the number of submissions for batch.
  *
  * @return array

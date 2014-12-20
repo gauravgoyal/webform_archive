@@ -111,6 +111,7 @@ function webform_archive_archive_active_webform() {
   // Get the webform arguments.
   $webform_nids = drush_get_option_list('webform');
   $text = '';
+  // Confirm user action for different cases.
   if (empty($archived_date_timepstamp) && empty($webform_nids)) {
     $text = dt('All the webform submissions will be archived till date');
   }
@@ -136,7 +137,8 @@ function webform_archive_archive_active_webform() {
   }
 
   if ($archive) {
-    webform_archive_start_archiving($webform_nids, $archived_date_timepstamp);
+    $webform_nids = webform_archive_get_valid_webforms($webform_nids, 1);
+    webform_archive_start_archive_after_confirm($webform_nids, $archived_date_timepstamp);
   }
 }
 
@@ -149,38 +151,107 @@ function webform_archive_archive_active_webform() {
  *   Unix timestamp for archiving.
  */
 function webform_archive_start_archiving($webform_nids, $archived_date_timepstamp) {
+  if (!empty($webform_nids)) {
+    $operations = array(
+      array('webform_archive_batch_process_start',
+        array($webform_nids, $archived_date_timepstamp)),
+    );
+    $batch = array(
+      'title' => t('Archive Webform Submissions'),
+      'operations' => $operations,
+      'file' => drupal_get_path('module', 'webform_archive') . '/includes/webform_archive.batch.inc',
+      'finished' => 'webform_archive_batch_finished',
+      'init_message' => t('Archive Batch is starting.'),
+      'progress_message' => t('Processed @current out of @total.'),
+      'error_message' => t('Archive Batch has encountered an error.'),
+    );
+    batch_set($batch);
+    // Start processing the batch operations.
+    drush_backend_batch_process();
+  }
+  else {
+    drush_print(dt('No Webforms are archived.'));
+  }
+}
+
+/**
+ * Archive all closed webform submissions.
+ */
+function webform_archive_archive_closed_webform() {
+  // Get the webform arguments.
+  $webform_nids = drush_get_option_list('webform');
+  $webforms = array();
+  if (empty($webform_nids)) {
+    // Get all webforms which are closed.
+    $webforms = webform_archive_get_all_webforms(0);
+    $webforms = array_keys($webforms);
+  }
+  else {
+    // Check that all webforms gived are closed.
+    $webforms = webform_archive_get_valid_webforms($webform_nids, 0);
+  }
+
+  if (!empty($webforms)) {
+    webform_archive_start_archive_after_confirm($webforms, REQUEST_TIME);
+  }
+  else {
+    drush_print(dt('No Webforms are archived.'));
+  }
+}
+
+/**
+ * Check webform exists or not.
+ *
+ * @param array $webform_nids
+ *   Array of webform nids.
+ *
+ * @return array
+ *   Webform nids which does not exists.
+ */
+function webform_archive_get_valid_webforms($webform_nids, $status) {
   $nid_not_exists = array();
+  $wrong_webform = array();
   foreach ($webform_nids as $nid) {
-    if (is_object(node_load($nid))) {
+    $node = node_load($nid);
+    if (is_object($node)) {
+      if ($node->webform['status'] != $status) {
+        $wrong_webform[] = $nid;
+      }
       continue;
     }
     $nid_not_exists[] = $nid;
   }
 
+  $webform_nids = array_diff($webform_nids, $nid_not_exists, $wrong_webform);
+
   if (!empty($nid_not_exists)) {
-    $webform_nids = array_diff($webform_nids, $nid_not_exists);
     $nid_not_exists = implode(',', $nid_not_exists);
-    drush_print(dt('Webform nid(s) @nid does not exists, so these will not be archived', array('@nid' => $nid_not_exists)));
+    drush_print(dt('Webform nid(s): (@nid) does not exists, so these will not be archived', array('@nid' => $nid_not_exists)));
   }
 
-  $operations = array(
-    array('webform_archive_batch_process_start',
-      array($webform_nids, $archived_date_timepstamp)),
-  );
-  $batch = array(
-    'title' => t('Archive Webform Submissions'),
-    'operations' => $operations,
-    'file' => drupal_get_path('module', 'webform_archive') . '/includes/webform_archive.batch.inc',
-    'finished' => 'webform_archive_batch_finished',
-    'init_message' => t('Archive Batch is starting.'),
-    'progress_message' => t('Processed @current out of @total.'),
-    'error_message' => t('Archive Batch has encountered an error.'),
-  );
-  batch_set($batch);
-  // Start processing the batch operations.
-  drush_backend_batch_process();
+  if (!empty($wrong_webform)) {
+    $wrong_webform = implode(',', $wrong_webform);
+    $webform_status = ($status == 1) ? 'active' : 'closed';
+    drush_print(dt('Status of Webform nid(s): (@nid) is not @status, so these will not be archived', array(
+      '@nid' => $wrong_webform,
+      '@status' => $webform_status,
+      )));
+  }
+  return $webform_nids;
 }
 
 /**
- * @TODO Function which will archive all the closed webform submissions.
+ * Ask user for the final input before archiving, if yes then archive.
+ *
+ * @param array $webforms
+ *   Webform nids.
+ * @param int $timestamp
+ *   Unix timestamp.
  */
+function webform_archive_start_archive_after_confirm($webforms, $timestamp) {
+  if (!empty($webforms)) {
+    if (drush_confirm(dt('Webforms with nid(s): (@nid) will be archived, Do you still want to continue', array('@nid' => implode(',', $webforms))))) {
+      webform_archive_start_archiving($webforms, $timestamp);
+    }
+  }
+}
