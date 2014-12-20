@@ -62,8 +62,12 @@ function webform_archive_download_reports_form($form, &$form_state, $webform_nod
   $year_range = $start_range . ':' . $end_range;
 
   // Various Report download options.
-  $options = array('yearly' => t('Yearly'), 'monthly' => t('Monthly'),
-    'half-yearly' => t('Half Yearly'), 'quarterly' => t('Quarterly'));
+  $options = array(
+    'yearly' => t('Yearly'),
+    'monthly' => t('Monthly'),
+    'half-yearly' => t('Half Yearly'),
+    'quarterly' => t('Quarterly'),
+  );
 
   $form_state['storage']['webform_node'] = $webform_node;
 
@@ -173,7 +177,7 @@ function webform_archive_download_reports_form_submit($form, &$form_state) {
   if ($show_count == 1) {
     module_load_include('inc', 'webform_archive', 'includes/webform_archive.batch');
     $count = webform_archive_archive_submissions_count($webform_node->nid, $start_time, $end_time);
-    drupal_set_message('Total Download Count : ' . $count);
+    drupal_set_message(t('Total Download Count : @count'), array('@count' => $count));
   }
   else {
     // Calls the batch process.
